@@ -1,0 +1,10 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}Request to Buy{% endblock %}
+
+{% block content %}
+<h2>Request to Buy</h2>
+<p>You have requested to buy: <strong>{{ product.name }}</strong></p>
+<p>Check the console for email notification.</p>
+<a href="{% url 'product_list' %}" class="btn btn-secondary">Back to Products</a>
+{% endblock %}

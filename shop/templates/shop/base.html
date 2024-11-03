@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <title>
+      {% block title %}
+        Webshop
+      {% endblock %}
+    </title>
+    <style>
+      body {
+        display: flex;
+        flex-direction: column; /* Stack children vertically */
+        min-height: 100vh; /* Full height of the viewport */
+        margin: 0; /* Remove default margin */
+      }
+      .main-content {
+        flex: 1; /* Allow the main content to grow and fill the space */
+        margin-bottom: 100px; /* Adjust this based on your footer height */
+      }
+      .sidebar {
+        min-height: 100vh;
+        background-color: #f8f9fa; /* Light background for sidebars */
+        padding: 15px; /* Padding for content */
+      }
+      .content {
+        background-color: #ffffff; /* White background for main content */
+        padding: 15px; /* Padding for content */
+      }
+    </style>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="/">My Webshop</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav me-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'add_product' %}">Add Product</a>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'product_list' %}">Home</a>
+              </li>
+            {% endif %}
+          </ul>
+          <ul class="navbar-nav ms-auto">
+            {% if user.is_authenticated %}
+              <li class="nav-item">
+                <a class="nav-link text-primary" href="{% url 'profile' %}">{{ user.username }}</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
+                  {% csrf_token %}
+                </form>
+              </li>
+            {% else %}
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'login' %}">Login</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="{% url 'register' %}">Register</a>
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-md-2 sidebar">
+          <h3 class="text-success">Categories</h3>
+          <ul>
+            <li>Electronics</li>
+            <li>Clothing</li>
+            <li>Home & Garden</li>
+            <li>Sports & Outdoors</li>
+            <li>Health & Beauty</li>
+          </ul>
+
+          <h3 class="text-success">Featured Products</h3>
+          <ul>
+            <li>Stylish Headphones</li>
+            <li>Eco-Friendly Water Bottle</li>
+            <li>Smartwatch with Fitness Tracker</li>
+            <li>Designer Sunglasses</li>
+          </ul>
+
+          <h3 class="text-success">Promotions</h3>
+          <p>Deal of the Day: 20% off on selected items!</p>
+          <p class="text-danger">Free Shipping on orders over $50.</p>
+          <p>Subscribe for exclusive offers!</p>
+        </div>
+        <div class="col-md-8 content main-content">
+          {% block content %}
+          {% endblock %}
+        </div>
+        <div class="col-md-2 sidebar">
+          <h3>Customer Support</h3>
+          <ul>
+            <li>
+              <a href="#">Need Help? Contact Us!</a>
+            </li>
+            <li>
+              <a href="#">Frequently Asked Questions (FAQs)</a>
+            </li>
+            <li>
+              <a href="#">Live Chat Support Available</a>
+            </li>
+          </ul>
+
+          <h3>Latest News</h3>
+          <ul>
+            <li>New Arrivals: Check out our latest products!</li>
+            <li>Sale Alerts: Stay updated on our seasonal sales.</li>
+            <li>Blog Highlights: Tips on how to make the most of your purchases.</li>
+          </ul>
+
+          <h3>Follow Us</h3>
+          <p>Stay connected:</p>
+          <ul>
+            <li>
+              <a href="#">Facebook</a>
+            </li>
+            <li>
+              <a href="#">Twitter</a>
+            </li>
+            <li>
+              <a href="#">Instagram</a>
+            </li>
+            <li>
+              <a href="#">Pinterest</a>
+            </li>
+          </ul>
+
+          <h3>Testimonials</h3>
+          <blockquote>
+            <p>"I love shopping here! Great products and fast delivery." – Sarah</p>
+          </blockquote>
+          <blockquote>
+            <p>"The customer service was excellent!" – Mike</p>
+          </blockquote>
+        </div>
+      </div>
+    </div>
+
+    <footer class="bg-light text-center text-lg-start">
+      <div class="container p-4">
+        <div class="row">
+          <div class="col-lg-4 col-md-12 mb-4">
+            <h5 class="text-uppercase">About Us</h5>
+            <p>Welcome to My Webshop! We provide a wide range of quality products to cater to all your needs. Our mission is to deliver the best shopping experience to our customers.</p>
+          </div>
+    
+          <div class="col-lg-4 col-md-6 mb-4">
+            <h5 class="text-uppercase">Contact Us</h5>
+            <p>
+              Email: info@mywebshop.com<br />
+              Phone: +5999 6774821<br />
+              Address: Curacao, Willemstad
+            </p>
+          </div>
+    
+          <div class="col-lg-4 col-md-6 mb-4">
+            <h5 class="text-uppercase">Follow Us</h5>
+            <a target="_blank" href="https://www.facebook.com/patmillerson" class="text-decoration-none">Facebook</a><br />
+            <a target="_blank" href="https://www.linkedin.com/in/patrick-millerson-60b33b143/" class="text-decoration-none">Linkedin</a><br />
+            <a target="_blank" href="https://www.instagram.com/patmillerson/" class="text-decoration-none">Instagram</a><br />
+          </div>
+        </div>
+      </div>
+    
+      <div class="text-center p-3 bg-dark text-white">© 2024 <a href="/">My Webshop</a> All rights reserved.</div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+  </body>
+</html>

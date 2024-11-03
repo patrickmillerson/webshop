@@ -1,0 +1,26 @@
+{% extends 'shop/base.html' %}
+
+{% block title %}
+  {{ product.name }}
+{% endblock %}
+
+{% block content %}
+  <div class="container mt-4">
+    <img src="{{ product.image.url }}" class="img-fluid" alt="..." />
+    <h2>{{ product.name }}</h2>
+    <p>
+      <strong>Price:</strong> ${{ product.price }}
+    </p>
+    <p>
+      <strong>Description:</strong> {{ product.description }}
+    </p>
+    {% if user.is_authenticated and product.user == user %}
+      <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+    <a href="{% url 'request_to_buy' product.id %}" class="btn btn-primary">Request to Buy</a>
+
+    <div class="pb-5">
+      <a href="{% url 'product_list' %}" class="btn btn-secondary">Back to Product List</a>
+    </div>
+  </div>
+{% endblock %}
