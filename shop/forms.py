@@ -1,5 +1,8 @@
 from django import forms
+import random
+import string
 from django.contrib.auth.forms import AuthenticationForm
+from django.core.exceptions import ValidationError
 from .models import CustomUser, Product
 
 class UserRegistrationForm(forms.ModelForm):
@@ -7,10 +10,22 @@ class UserRegistrationForm(forms.ModelForm):
     user_type = forms.ChoiceField(choices=CustomUser.USER_TYPE_CHOICES, label="Register as")
     password1 = forms.CharField(widget=forms.PasswordInput)
     password2 = forms.CharField(widget=forms.PasswordInput)
+    captcha = forms.CharField(label='Enter the text shown below', max_length=6)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Generate a random CAPTCHA string
+        self.captcha_value = ''.join(random.choices(string.ascii_uppercase + string.digits, k=6))
 
     class Meta:
         model = CustomUser
-        fields = ('username', 'email', 'password1', 'password2', 'user_type')
+        fields = ('username', 'email', 'password1', 'password2', 'user_type', 'captcha')
+
+    def clean_captcha(self):
+        captcha_input = self.cleaned_data.get('captcha')
+        if captcha_input != self.captcha_value:
+            raise forms.ValidationError("Incorrect CAPTCHA. Please try again.")
+        return captcha_input
 
     def clean(self):
         cleaned_data = super().clean()
@@ -39,4 +54,3 @@ class RequestToBuyForm(forms.Form):
     email = forms.EmailField(label='Your Email')
     message = forms.CharField(widget=forms.Textarea, label='Message', required=False)
     
-        

@@ -7,7 +7,7 @@
     <h2>Register</h2>
     <form method="post">
         {% csrf_token %}
-        
+
         <div class="mb-3">
             <label for="username" class="form-label">Username</label>
             <input type="text" class="form-control" id="username" name="username" required>
@@ -36,8 +36,18 @@
             </select>
         </div>
 
+        <div class="mb-3">
+            <label for="captcha" class="form-label">CAPTCHA: {{ captcha_value }}</label>
+            <input type="text" class="form-control" id="captcha" name="captcha" required>
+            {% if form.captcha.errors %}
+                <div class="text-danger">
+                    {{ form.captcha.errors }}
+                </div>
+            {% endif %}
+        </div>
+
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
-    <a href="{% url 'login' %}">Already have an account? Login here</a>
+    <p class="mt-3">Already have an account? <a href="{% url 'login' %}">Login here</a></p>
 </div>
 {% endblock %}

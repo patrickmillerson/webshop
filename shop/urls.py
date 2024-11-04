@@ -8,6 +8,7 @@ from .views import (
     profile_view,
     edit_profile,
     delete_product,
+    delete_account,
     ProductDetailView
 )
 from django.contrib.auth.views import LogoutView
@@ -15,6 +16,7 @@ from django.contrib.auth.views import LogoutView
 urlpatterns = [
     path('register/', register, name='register'),
     path('login/', login_view, name='login'),
+    path('account/delete/', delete_account, name='delete_account'),
     path('', product_list, name='product_list'),
     path('products/add/', add_product, name='add_product'),
     path('products/request_to_buy/<int:product_id>/', request_to_buy, name='request_to_buy'),

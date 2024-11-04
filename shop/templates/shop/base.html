@@ -32,15 +32,15 @@
     </style>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
       <div class="container-fluid">
         <a class="navbar-brand" href="/">My Webshop</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav me-auto">
             {% if user.is_authenticated %}
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'add_product' %}">Add Product</a>
+              <li class="nav-item bg-primary">
+                <a class="nav-link text-white" href="{% url 'add_product' %}">Add Product</a>
               </li>
             {% else %}
               <li class="nav-item">
@@ -53,8 +53,8 @@
               <li class="nav-item">
                 <a class="nav-link text-primary" href="{% url 'profile' %}">{{ user.username }}</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+              <li class="nav-item bg-danger">
+                <a class="nav-link text-white" href="{% url 'logout' %}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                 <form id="logout-form" action="{% url 'logout' %}" method="POST" style="display: none;">
                   {% csrf_token %}
                 </form>
@@ -63,8 +63,8 @@
               <li class="nav-item">
                 <a class="nav-link" href="{% url 'login' %}">Login</a>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="{% url 'register' %}">Register</a>
+              <li class="nav-item bg-success">
+                <a class="nav-link text-white" href="{% url 'register' %}">Register</a>
               </li>
             {% endif %}
           </ul>
@@ -72,7 +72,11 @@
       </div>
     </nav>
     <div class="container-fluid">
-      <div class="row">
+      <div class="row">        
+        <div class="col-md-10 content main-content">
+          {% block content %}
+          {% endblock %}
+        </div>
         <div class="col-md-2 sidebar">
           <h3 class="text-success">Categories</h3>
           <ul>
@@ -95,12 +99,6 @@
           <p>Deal of the Day: 20% off on selected items!</p>
           <p class="text-danger">Free Shipping on orders over $50.</p>
           <p>Subscribe for exclusive offers!</p>
-        </div>
-        <div class="col-md-8 content main-content">
-          {% block content %}
-          {% endblock %}
-        </div>
-        <div class="col-md-2 sidebar">
           <h3>Customer Support</h3>
           <ul>
             <li>
@@ -160,17 +158,17 @@
           <div class="col-lg-4 col-md-6 mb-4">
             <h5 class="text-uppercase">Contact Us</h5>
             <p>
-              Email: info@mywebshop.com<br />
-              Phone: +5999 6774821<br />
+              Email: {{ email_host_user }}<br />
+              Phone: {{ user_mobile_phone }}<br />
               Address: Curacao, Willemstad
             </p>
           </div>
     
           <div class="col-lg-4 col-md-6 mb-4">
             <h5 class="text-uppercase">Follow Us</h5>
-            <a target="_blank" href="https://www.facebook.com/patmillerson" class="text-decoration-none">Facebook</a><br />
-            <a target="_blank" href="https://www.linkedin.com/in/patrick-millerson-60b33b143/" class="text-decoration-none">Linkedin</a><br />
-            <a target="_blank" href="https://www.instagram.com/patmillerson/" class="text-decoration-none">Instagram</a><br />
+            <a target="_blank" href="{{ facebook_user }}" class="text-decoration-none">Facebook</a><br />
+            <a target="_blank" href="{{ linkedin_user }}" class="text-decoration-none">Linkedin</a><br />
+            <a target="_blank" href="{{ instagram_user }}" class="text-decoration-none">Instagram</a><br />
           </div>
         </div>
       </div>

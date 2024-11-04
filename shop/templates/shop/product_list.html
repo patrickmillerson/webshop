@@ -5,18 +5,27 @@
 {% endblock %}
 
 {% block content %}
-  <h2>Products</h2>
+  <h2>Our Products</h2>
   <div class="row">
     {% for product in products %}
-      <div class="col-md-4">
+      <div class="col-md-3">
         <div class="card mb-4">
-          <img src="{{ product.image.url }}" style="height: 350px; object-fit: cover;" class="card-img-top" alt="{{ product.name }}" />
+          <a href="{% url 'product_detail' product.id %}"><img src="{{ product.image.url }}" style="height: 350px; object-fit: cover;" class="card-img-top" alt="{{ product.name }}" /></a>
           <div class="card-body">
             <h5 class="card-title">{{ product.name }}</h5>
-            <p class="card-text">ID#: {{ product.id }}</p>
-            <p class="card-text">Description: {{ product.description|truncatechars:100 }}</p>
+            <p class="card-text">
+              <strong>ID#</strong>: {{ product.id }}
+            </p>
+            <p class="card-text">
+              <strong>Description</strong>: {{ product.description|truncatechars:100 }}
+            </p>
+            <p class="card-text">
+              <strong>Seller</strong>: {{ product.user }}
+            </p>
             <a href="{% url 'product_detail' product.id %}">Read more.....</a>
-            <p class="card-text">Price: ${{ product.price }}</p>
+            <p class="card-text">
+              <strong>Price</strong>: ${{ product.price }}
+            </p>
             <a href="{% url 'request_to_buy' product.id %}" class="btn btn-primary">Request to Buy</a>
             {% if user.is_authenticated and product.user == user %}
               <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>

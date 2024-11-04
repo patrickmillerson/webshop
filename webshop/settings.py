@@ -1,5 +1,7 @@
 from pathlib import Path
+from dotenv import load_dotenv
 import os
+load_dotenv()
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -9,10 +11,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-lc!2(as)a^g3ym3^jxq@xvamsv5n&p1ey+ifvoexg77@p(q@1c"
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG')
 
 ALLOWED_HOSTS = ["*", "webshop-66lq.onrender.com", "https://webshop-66lq.onrender.com"]
 
@@ -54,6 +56,11 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
+                "shop.context_processors.email_host_user",
+                "shop.context_processors.user_profile",
+                "shop.context_processors.facebook_user", 
+                "shop.context_processors.linkedin_user", 
+                "shop.context_processors.instagram_user", 
             ],
         },
     },
@@ -119,20 +126,23 @@ STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# Email settings for console output
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-DEFAULT_SELLER_EMAIL = "webshop@info.com"
+# Email settings
 
-# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_HOST = 'smtp.your_email_provider.com'  # Replace with your email provider's SMTP server
-# EMAIL_PORT = 587  # Typically 587 for TLS
-# EMAIL_USE_TLS = True  # Use TLS
-# EMAIL_HOST_USER = 'your_email@example.com'  # Your email address
-# EMAIL_HOST_PASSWORD = 'your_email_password'  # Your email password
-# DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Default from email address
+EMAIL_BACKEND = os.getenv('EMAIL_BACKEND')
+EMAIL_HOST = os.getenv('EMAIL_HOST')
+EMAIL_PORT = os.getenv('EMAIL_PORT')
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS')
+EMAIL_HOST_USER =  os.getenv('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = os.getenv('DEFAULT_FROM_EMAIL')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_URL = '/login/' 
+
+MOBILE_HOST_USER = os.getenv("MOBILE_HOST_USER")
+FACEBOOK_USER = os.getenv("FACEBOOK_USER")
+LINKEDIN_USER = os.getenv("LINKEDIN_USER")
+INSTAGRAM_USER = os.getenv("INSTAGRAM_USER")

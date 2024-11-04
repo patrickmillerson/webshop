@@ -14,6 +14,9 @@
     <p>
       <strong>Description:</strong> {{ product.description }}
     </p>
+    <p>
+      <strong>Seller:</strong> {{ product.user }}
+    </p>
     {% if user.is_authenticated and product.user == user %}
       <a href="{% url 'delete_product' product.id %}" class="btn btn-danger">Delete</a>
     {% endif %}

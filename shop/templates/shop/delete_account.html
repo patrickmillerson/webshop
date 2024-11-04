@@ -1,0 +1,14 @@
+
+{% extends 'shop/base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Delete Account</h2>
+    <p>Warning: If you delete your account, all your data will be permanently deleted.</p>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-danger">Delete My Account</button>
+    </form>
+    <a href="{% url 'profile' %}" class="btn btn-secondary">Cancel</a>
+</div>
+{% endblock %}

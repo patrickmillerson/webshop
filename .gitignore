@@ -1,0 +1,26 @@
+# Environment variables
+.env
+
+# Python bytecode
+__pycache__/
+*.pyc
+*.pyo
+
+# Local database
+# db.sqlite3
+
+# Virtual environment
+venv/
+env/
+
+# Static and media files
+staticfiles/
+media/
+
+# Logs and cache
+*.log
+
+# IDE and editor configs
+.vscode/
+.idea/
+.ipynb_checkpoints/

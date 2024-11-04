@@ -4,37 +4,61 @@ from django.contrib.auth import login, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, RequestToBuyForm, CustomLoginForm
-from .models import Product
+from .models import Product, UserProfile
 from django.views import View
+import random
 from django.conf import settings
 from .forms import ProductForm
 
 @login_required
+def delete_account(request):
+    if request.method == 'POST':
+        user = request.user
+        user.delete()
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('product_list')
+
+    return render(request, 'shop/delete_account.html')
+
+@login_required
 def edit_profile(request):
     user = request.user
+    user_profile = user.userprofile
 
     if request.method == 'POST':
-        user.email = request.POST['email']
-        user.save()
+        # Update user fields
+        user.username = request.POST['username']
+        user.first_name = request.POST['first_name']
+        user.last_name = request.POST['last_name']
+        user_profile.mobile_phone = request.POST['mobile_phone']
+        
+        user.save()  # Save the user instance
+        user_profile.save()  # Save the user profile instance
+        
         return redirect('profile')  # Redirect to profile page after saving
 
-    return render(request, 'shop/edit_profile.html', {'user': user})
+    return render(request, 'shop/edit_profile.html', {'user': user, 'user_profile': user_profile})
 
 @login_required
 def profile_view(request):
-    return render(request, 'shop/profile.html')  # Make sure to create this template
+    user = request.user
+    user_profile, created = UserProfile.objects.get_or_create(user=user)
+
+    return render(request, 'shop/profile.html', {"user": user, "user_profile" : user_profile})
 
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])  # Hash the password
+            user.set_password(form.cleaned_data['password1'])
             user.save()
-            return redirect('login')  # Redirect to login page after successful registration
+            return redirect('login')
     else:
         form = UserRegistrationForm()
-    
+
+    return render(request, 'shop/register.html', {'form': form, 'captcha_value': form.captcha_value})
+
     return render(request, 'shop/register.html', {'form': form})
 
 def login_view(request):
@@ -43,7 +67,9 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            return redirect('product_list')  # Redirect to your desired URL
+            return redirect('product_list')
+        else:
+            form.add_error(None, "Invalid username or password. Please try again.")
     else:
         form = CustomLoginForm()
     return render(request, 'shop/login.html', {'form': form})
@@ -51,8 +77,10 @@ def login_view(request):
 @login_required(login_url='/login/')
 def request_to_buy(request, product_id):
     product = get_object_or_404(Product, id=product_id)
-
+    
     if request.method == 'POST':
+        user = request.user
+        user_profile = user.userprofile
         form = RequestToBuyForm(request.POST)
         
         if form.is_valid():
@@ -65,7 +93,18 @@ def request_to_buy(request, product_id):
             # Prepare the email
             subject = f'Request to Buy {product.name}'
             email_message = f"{name} wants to buy {product.name} with ID#: {product.id}.\n\nMessage: {message}"
-            recipient_list = [settings.DEFAULT_SELLER_EMAIL]  # Replace this with the actual seller's email
+            
+            email_message = (
+                f"New Purchase Request:\n\n"
+                f"Name: {name}\n"
+                f"Email: {product.user.email}\n"
+                f"Phone: {user_profile.mobile_phone}\n\n"
+                f"Product Requested: {product.name}\n"
+                f"Product ID: {product.id}\n\n"
+                f"Message from the Buyer:\n{message}\n\n"
+                f"Please review and respond to this request at your earliest convenience."
+            )
+            recipient_list = [product.user.email]  # Replace this with the actual seller's email
 
             # Send email (this will be the placeholder email for now)
             send_mail(
@@ -80,8 +119,10 @@ def request_to_buy(request, product_id):
         form = RequestToBuyForm()
 
     return render(request, 'shop/request_to_buy.html', {'form': form, 'product': product})
+
 def product_list(request):
-    products = Product.objects.all()
+    products = list(Product.objects.all())  # Convert the queryset to a list
+    random.shuffle(products)  # Shuffle the list in place
     return render(request, 'shop/product_list.html', {'products': products})
 
 def add_product(request):
