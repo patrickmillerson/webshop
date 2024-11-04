@@ -14,8 +14,8 @@ venv/
 env/
 
 # Static and media files
-staticfiles/
-media/
+# staticfiles/
+# media/
 
 # Logs and cache
 *.log
