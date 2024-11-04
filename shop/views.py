@@ -4,7 +4,7 @@ from django.contrib.auth import login, authenticate
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from .forms import UserRegistrationForm, RequestToBuyForm, CustomLoginForm
-from .models import Product, UserProfile
+from .models import Product, UserProfile, CustomUser
 from django.views import View
 import random
 from django.conf import settings
@@ -49,15 +49,20 @@ def profile_view(request):
 def register(request):
     if request.method == 'POST':
         form = UserRegistrationForm(request.POST)
+        
+        # Check if the username already exists
+        if CustomUser.objects.filter(username=form.data.get('username')).exists():
+            form.add_error('username', 'This username is already taken.')
+
+        # Check if the form is valid after adding errors
         if form.is_valid():
             user = form.save(commit=False)
-            user.set_password(form.cleaned_data['password1'])
+            user.set_password(form.cleaned_data['password1'])  # Hash the password
             user.save()
-            return redirect('login')
+            messages.success(request, 'Registration successful! You can now log in.')
+            return redirect('login')  # Redirect to login page after successful registration
     else:
         form = UserRegistrationForm()
-
-    return render(request, 'shop/register.html', {'form': form, 'captcha_value': form.captcha_value})
 
     return render(request, 'shop/register.html', {'form': form})
 
