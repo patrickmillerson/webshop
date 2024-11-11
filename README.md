@@ -1,6 +1,6 @@
-Create an .env file in your project dir.
+#Create an .env file in your project dir.
 
-These are the ENV VARS that needs to be set:
+#These are the ENV VARS that needs to be set:
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 
